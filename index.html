@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sorpresa!</title>
+    <!-- Font elegante da Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET BASE E OTTIMIZZAZIONI TOUCH */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            /* Rimuove l'alone azzurro al tocco su browser mobile */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* Evita qualsiasi scorrimento orizzontale accidentale */
+            background-color: #f3e8ff;
+            color: #333;
+        }
+
+        /* HERO SECTION (PERFETTA PER MOBILE) */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            min-height: 100dvh; /* Usa l'altezza dinamica dello schermo mobile */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Patina trasparente scura */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+            font-size: clamp(2.5rem, 8vw, 5rem); /* Si adatta automaticamente allo schermo */
+            font-weight: 700;
+            text-shadow: 2px 4px 15px rgba(0,0,0,0.6);
+            text-align: center;
+            animation: fadeInDown 1.2s ease-out;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* SEZIONI TESTO CON SFONDO LILLA PASTELLO */
+        .scroll-section {
+            min-height: 35vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            background-color: #f3e8ff;
+        }
+
+        /* Testo decentrato a Sinistra - Viola Scuro Elegante */
+        .section-left h2 {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 600;
+            color: #3b2354;
+            text-align: center;
+            margin-right: 12vw;
+        }
+
+        /* Testo decentrato a Destra - Viola Orchidea Vibrante */
+        .section-right h2 {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 600;
+            color: #8e24aa;
+            text-align: center;
+            margin-left: 12vw;
+        }
+
+        /* ANIMAZIONI DI ENTRATA A SCORRIMENTO */
+        .hidden-left {
+            opacity: 0;
+            transform: translateX(-80px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .hidden-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .hidden-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+
+        /* Stato visibile attivato allo scroll */
+        .show {
+            opacity: 1;
+            transform: translateX(0) translateY(0);
+        }
+
+        /* CONTENITORE RIQUADRO DESTINAZIONE */
+        .reveal-container {
+            min-height: 55vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px 50px 20px;
+            background-color: #f3e8ff;
+        }
+
+        .reveal-box {
+            width: 100%;
+            max-width: 600px;
+            height: 380px;
+            position: relative;
+            border-radius: 24px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(59, 35, 84, 0.18);
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            user-select: none; /* Impedisce la selezione del testo al tocco */
+        }
+
+        /* Feedback al tocco / pressione */
+        .reveal-box:active {
+            transform: scale(0.98);
+        }
+
+        .reveal-cover, .reveal-content {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 24px;
+            transition: opacity 0.8s ease;
+        }
+
+        .reveal-cover {
+            background: linear-gradient(135deg, #3b2354, #8e24aa);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 25px;
+            z-index: 2;
+        }
+
+        .reveal-content {
+            z-index: 1;
+            opacity: 0;
+            background-color: #fff;
+        }
+
+        .reveal-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .revealed .reveal-cover {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .revealed .reveal-content {
+            opacity: 1;
+        }
+
+        .click-hint {
+            font-size: 0.95rem;
+            color: #7e6b8f;
+            margin-top: 18px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* FOOTER (ITINERARIO) */
+        footer {
+            background: #281738;
+            color: white;
+            text-align: center;
+            padding: 45px 20px;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            font-weight: 300;
+            margin-bottom: 18px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #9c27b0;
+            color: white;
+            text-decoration: none;
+            padding: 14px 36px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+        }
+
+        .download-btn:active {
+            transform: scale(0.96);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SPECIFICHE MOBILE (SOTTO I 768px) */
+        @media (max-width: 768px) {
+            .hero {
+                /* Risolve il problema del lag/zoom con sfondo fisso su Safari iOS */
+                background-attachment: scroll;
+            }
+
+            .section-left h2, .section-right h2 {
+                margin: 0; /* Centrato perfettamente negli schermi piccoli */
+            }
+
+            .hidden-left {
+                transform: translateX(-40px); /* Movimento più contenuto per schermi stretti */
+            }
+
+            .hidden-right {
+                transform: translateX(40px);
+            }
+
+            .reveal-box {
+                height: 320px; /* Dimensione ideale per il display di qualsiasi smartphone */
+            }
+
+            .reveal-cover {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Intestazione con foto di sfondo -->
+    <header class="hero">
+        <h1>Tanti Auguri!</h1>
+    </header>
+
+    <!-- Prima scritta: Scivola da SINISTRA allo scorrimento -->
+    <section class="scroll-section section-left">
+        <h2 class="hidden-left">Preparate le valigie...</h2>
+    </section>
+
+    <!-- Seconda scritta: Scivola da DESTRA allo scorrimento -->
+    <section class="scroll-section section-right">
+        <h2 class="hidden-right">...si va a...</h2>
+    </section>
+
+    <!-- Riquadro destinazione -->
+    <section class="reveal-container">
+        <div class="hidden-up" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="reveal-box" id="magicBox">
+                <div class="reveal-cover">
+                    Tocca qui per scoprire la meta! ✈️
+                </div>
+                <div class="reveal-content">
+                    <!-- IMMAGINE DESTINAZIONE -->
+                    <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1200&q=80" alt="Foto della destinazione">
+                </div>
+            </div>
+            <div class="click-hint">Tocca il riquadro per svelare la foto</div>
+        </div>
+    </section>
+
+    <!-- Footer con scaricamento PDF -->
+    <footer>
+        <p>Scarica l'itinerario</p>
+        <a href="il_tuo_itinerario.pdf" download class="download-btn">Scarica il PDF</a>
+    </footer>
+
+    <script>
+        // Gestione del touch/click sul riquadro
+        const box = document.getElementById('magicBox');
+        box.addEventListener('click', () => {
+            box.classList.add('revealed');
+        });
+
+        // Configurazione dell'Observer ottimizzata per schermi mobile
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px" // Innesco fluido e naturale durante lo scroll con il pollice
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, observerOptions);
+
+        // Applica l'observer agli elementi animati
+        const animatedElements = document.querySelectorAll('.hidden-left, .hidden-right, .hidden-up');
+        animatedElements.forEach((el) => observer.observe(el));
+    </script>
+
+</body>
+</html>
