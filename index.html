@@ -29,7 +29,8 @@
         .hero {
             position: relative;
             min-height: 100vh;
-            min-height: 100dvh; /* Usa l'altezza dinamica dello schermo mobile */
+            /* CORREZIONE 1: Usiamo svh (Small Viewport Height) per evitare i ricalcoli dovuti alla barra degli indirizzi */
+            min-height: 100svh; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -52,7 +53,7 @@
             position: relative;
             z-index: 2;
             color: #ffffff;
-            font-size: clamp(2.5rem, 8vw, 5rem); /* Si adatta automaticamente allo schermo */
+            font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 700;
             text-shadow: 2px 4px 15px rgba(0,0,0,0.6);
             text-align: center;
@@ -113,9 +114,10 @@
         }
 
         /* Stato visibile attivato allo scroll */
+        /* CORREZIONE 2: Aggiunto !important per impedire che il media query mobile lo sovrascriva */
         .show {
-            opacity: 1;
-            transform: translateX(0) translateY(0);
+            opacity: 1 !important;
+            transform: translateX(0) translateY(0) !important;
         }
 
         /* CONTENITORE RIQUADRO DESTINAZIONE */
@@ -139,10 +141,9 @@
             box-shadow: 0 15px 35px rgba(59, 35, 84, 0.18);
             overflow: hidden;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
-            user-select: none; /* Impedisce la selezione del testo al tocco */
+            user-select: none;
         }
 
-        /* Feedback al tocco / pressione */
         .reveal-box:active {
             transform: scale(0.98);
         }
