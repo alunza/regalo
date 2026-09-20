@@ -82,7 +82,7 @@
     <div class="map-inner">
       <a class="map-link ph-box" href="#" onclick="return false;">
         <!-- Sostituisci con l'immagine della mappa delle relazioni -->
-        <div class="ph"><span>MAPPA DELLE RELAZIONI<br>collega qui l'immagine</span></div>
+        <div class="ph"><img src="assets\MAPPA INTRECCI.png" alt=""></div>
       </a>
     </div>
   </section>
@@ -115,10 +115,10 @@
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-face card-front ph-box">
-          <div class="ph"><img src="assets\\personaggi\\${i}.jpg" alt=""></div>
+          <div class="ph"><img src="assets\\personaggi\\${i}.png" alt=""></div>
         </div>
         <div class="card-face card-back ph-box">
-          <div class="ph"><img src="assets\\personaggi\\d${1}.png" alt=""></div>
+          <div class="ph"><img src="assets\\personaggi\\d${i}.png" alt=""></div>
         </div>
       </div>`;
     const flip = ()=>card.classList.toggle('flipped');
@@ -129,7 +129,5 @@
     grid.appendChild(card);
   }
 </script>
-<!--<img src="assets\personaggi\1.jpg" alt=""> -->
-<!--<img src="assets\personaggi\d1.png" alt=""> -->
 </body>
 </html>
