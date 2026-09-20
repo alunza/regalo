@@ -259,17 +259,19 @@ main{max-width:1180px;margin:0 auto;padding:1.9rem 1.15rem 3.5rem;}
 }
 
 /* ---------- Mappa relazioni ---------- */
-/* .map-inner porta il layout: la visibilità della pagina resta governata
-    solo da .page / .page.active, così non entra mai in conflitto con essa. */
+/* La foto reale è 1312 × 1199 (quasi quadrata, leggermente orizzontale):
+    il contenitore ora segue la stessa proporzione, così su telefono (dove uno
+    spazio alto e stretto la costringeva a un taglio laterale pesante) si vede
+    intera, occupando comunque tutta la larghezza disponibile. */
 .map-inner{
-    display:flex;
-    min-height:70vh;
-    min-height:70dvh;
+    width:100%;
 }
 .map-link{
-    flex:1;
     display:block;
     width:100%;
+    max-width:1312px;
+    margin:0 auto;
+    aspect-ratio:1312/1199;
 }
 .map-link .ph span{font-size:.8rem;}
 
