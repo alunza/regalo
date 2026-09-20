@@ -106,7 +106,7 @@
 
   // --- genera le 18 carte "Personaggi" ---
   const grid = document.getElementById('cardsGrid');
-  for(let i=1;i<=18;i++){
+  for(let i=1;i<=16;i++){
     const card = document.createElement('div');
     card.className='card';
     card.tabIndex=0;
@@ -115,10 +115,10 @@
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-face card-front ph-box">
-          <div class="ph"><span>PERSONAGGIO ${i}<br>1085 × 1450</span></div>
+          <div class="ph"><img src="assets\\personaggi\\${i}.jpg" alt=""></div>
         </div>
         <div class="card-face card-back ph-box">
-          <div class="ph"><span>RETRO ${i}<br>1085 × 1450</span></div>
+          <div class="ph"><img src="assets\\personaggi\\d${1}.png" alt=""></div>
         </div>
       </div>`;
     const flip = ()=>card.classList.toggle('flipped');
@@ -129,6 +129,7 @@
     grid.appendChild(card);
   }
 </script>
-
+<!--<img src="assets\personaggi\1.jpg" alt=""> -->
+<!--<img src="assets\personaggi\d1.png" alt=""> -->
 </body>
 </html>
