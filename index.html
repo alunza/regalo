@@ -80,16 +80,25 @@
   <!-- ============== PAGINA 3 — MAPPA RELAZIONI ============== -->
   <section id="mappa" class="page" role="tabpanel">
     <div class="map-inner">
-      <a class="map-link ph-box" href="#" onclick="return false;">
+      <div class="map-link ph-box">
         <!-- Sostituisci con l'immagine della mappa delle relazioni -->
-        <div class="ph"><img src="assets\MAPPA INTRECCI.png" alt=""></div>
-      </a>
+        <div class="ph"><img id="mapImg" src="assets\MAPPA INTRECCI.png" alt="Mappa delle relazioni"></div>
+        <button class="expand-btn expand-btn--large" type="button" id="mapExpandBtn" aria-label="Visualizza la mappa a schermo intero">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
 </main>
 
 <footer>Crystal Night Club — dal 1910</footer>
+
+<!-- overlay riutilizzabile per la visualizzazione a schermo intero -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Immagine a schermo intero" hidden>
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Chiudi">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
 
 <script>
   // --- navigazione a "pagine" ---
@@ -104,7 +113,39 @@
     });
   });
 
+  // --- overlay a schermo intero (lightbox) ---
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(src, alt){
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightbox.hidden = false;
+    document.body.classList.add('lightbox-open');
+  }
+  function closeLightbox(){
+    lightbox.hidden = true;
+    lightboxImg.src = '';
+    document.body.classList.remove('lightbox-open');
+  }
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e=>{
+    if(e.target === lightbox) closeLightbox(); // tocco fuori dalla foto chiude
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+  });
+
+  // bottone espandi della mappa delle relazioni
+  document.getElementById('mapExpandBtn').addEventListener('click', e=>{
+    e.stopPropagation();
+    const img = document.getElementById('mapImg');
+    openLightbox(img.src, img.alt);
+  });
+
   // --- genera le 16 carte "Personaggi" ---
+  const expandIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
   const grid = document.getElementById('cardsGrid');
   for(let i=1;i<=16;i++){
     const card = document.createElement('div');
@@ -115,16 +156,25 @@
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-face card-front ph-box">
-          <div class="ph"><img src="assets\\personaggi\\${i}.png" alt=""></div>
+          <div class="ph"><img src="assets\\personaggi\\${i}.png" alt="Personaggio ${i}"></div>
+          <button class="expand-btn" type="button" aria-label="Visualizza a schermo intero: personaggio ${i}" data-src="assets\\personaggi\\${i}.png" data-alt="Personaggio ${i}">${expandIcon}</button>
         </div>
         <div class="card-face card-back ph-box">
-          <div class="ph"><img src="assets\\personaggi\\d${i}.png" alt=""></div>
+          <div class="ph"><img src="assets\\personaggi\\d${i}.png" alt="Retro personaggio ${i}"></div>
+          <button class="expand-btn" type="button" aria-label="Visualizza a schermo intero: retro personaggio ${i}" data-src="assets\\personaggi\\d${i}.png" data-alt="Retro personaggio ${i}">${expandIcon}</button>
         </div>
       </div>`;
     const flip = ()=>card.classList.toggle('flipped');
     card.addEventListener('click', flip);
     card.addEventListener('keydown', e=>{
+      if(e.target !== card) return; // non far scattare il flip se il focus è sul bottone interno
       if(e.key==='Enter' || e.key===' '){e.preventDefault();flip();}
+    });
+    card.querySelectorAll('.expand-btn').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        e.stopPropagation();
+        openLightbox(btn.dataset.src, btn.dataset.alt);
+      });
     });
     grid.appendChild(card);
   }
